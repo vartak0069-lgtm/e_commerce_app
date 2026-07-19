@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - MyStore</title>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+<section class="container" style="padding:30px 0;">
+  <h2 class="section-title">Admin Dashboard</h2>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));" id="statsGrid">
+    <div class="spinner"></div>
+  </div>
+
+  <div style="display:flex; gap:14px; margin:24px 0;">
+    <a href="/admin/products.html" class="btn btn-secondary">Manage Products</a>
+    <a href="/admin/orders.html" class="btn btn-secondary">Manage Orders</a>
+    <a href="/admin/users.html" class="btn btn-secondary">Manage Users</a>
+    <a href="/admin/coupons.html" class="btn btn-secondary">Manage Coupons</a>
+  </div>
+</section>
+<script src="/js/utils.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/notifications.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/main.js"></script>
+<script>
+async function loadStats() {
+  const el = document.getElementById('statsGrid');
+  try {
+    const [sales, top] = await Promise.all([
+      api.get('/admin/analytics/sales'),
+      api.get('/admin/analytics/top-products'),
+    ]);
+    el.innerHTML = `
+      <div class="card" style="padding:20px;"><div class="text-muted">Total Orders</div><h2>${sales.data.totalOrders}</h2></div>
+      <div class="card" style="padding:20px;"><div class="text-muted">Total Revenue</div><h2>${formatPrice(sales.data.totalRevenue)}</h2></div>
+      <div class="card" style="padding:20px;"><div class="text-muted">Top Product</div><h2>${top.data[0]?.name || 'N/A'}</h2></div>
+    `;
+  } catch (err) { el.innerHTML = `<p class="text-danger">${err.message}</p>`; }
+}
+document.addEventListener('DOMContentLoaded', loadStats);
+</script>
+</body>
+</html>

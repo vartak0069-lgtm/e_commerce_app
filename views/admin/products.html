@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Products - Admin</title>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+<section class="container" style="padding:30px 0;">
+  <h2 class="section-title">Manage Products</h2>
+
+  <form id="productForm" class="card" style="padding:20px; margin-bottom:24px;">
+    <div class="form-group"><label>Name</label><input type="text" id="name" required></div>
+    <div class="form-group"><label>Description</label><textarea id="description"></textarea></div>
+    <div class="form-group"><label>Price</label><input type="number" id="price" required></div>
+    <div class="form-group"><label>Discount Price</label><input type="number" id="discount_price"></div>
+    <div class="form-group"><label>Category ID</label><input type="text" id="category_id" required placeholder="paste category UUID"></div>
+    <div class="form-group"><label>Stock Quantity</label><input type="number" id="stock_quantity" value="0"></div>
+    <button class="btn btn-primary" type="submit">Add Product</button>
+  </form>
+
+  <div id="productsList"><div class="spinner"></div></div>
+</section>
+<script src="/js/utils.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/notifications.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/main.js"></script>
+<script>
+async function loadProducts() {
+  const el = document.getElementById('productsList');
+  try {
+    const res = await api.get('/products?limit=50', { auth: false });
+    el.innerHTML = res.data.map(p => `
+      <div class="card" style="padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+        <span>${p.name} - ${formatPrice(p.price)} (Stock: ${p.stock_quantity})</span>
+        <button class="btn btn-danger delete-product" data-id="${p.id}">Delete</button>
+      </div>
+    `).join('');
+    document.querySelectorAll('.delete-product').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await api.delete(`/products/${btn.dataset.id}`);
+        showToast('Product deleted', 'success');
+        loadProducts();
+      });
+    });
+  } catch (err) { el.innerHTML = `<p class="text-danger">${err.message}</p>`; }
+}
+
+document.getElementById('productForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await api.post('/products', {
+      name: document.getElementById('name').value,
+      description: document.getElementById('description').value,
+      price: Number(document.getElementById('price').value),
+      discount_price: document.getElementById('discount_price').value ? Number(document.getElementById('discount_price').value) : null,
+      category_id: document.getElementById('category_id').value,
+      stock_quantity: Number(document.getElementById('stock_quantity').value),
+    });
+    showToast('Product added!', 'success');
+    e.target.reset();
+    loadProducts();
+  } catch (err) { showToast(err.message, 'error'); }
+});
+
+document.addEventListener('DOMContentLoaded', loadProducts);
+</script>
+</body>
+</html>

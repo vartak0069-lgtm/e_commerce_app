@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders - MyStore</title>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/navbar.css">
+<link rel="stylesheet" href="/css/footer.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+<section class="container" style="padding:30px 0;">
+  <h2 class="section-title">My Orders</h2>
+  <div id="ordersList"><div class="spinner"></div></div>
+</section>
+<div id="footer-placeholder"></div>
+<script src="/js/utils.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/notifications.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/main.js"></script>
+<script>
+async function loadOrders() {
+  const el = document.getElementById('ordersList');
+  try {
+    const res = await api.get('/orders');
+    el.innerHTML = res.data.length ? res.data.map(o => `
+      <div class="card" style="padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong>${o.order_number}</strong><br>
+          <span class="text-muted">${new Date(o.created_at).toLocaleDateString()}</span>
+        </div>
+        <div><span class="badge badge-success">${o.status}</span></div>
+        <div>${formatPrice(o.total_amount)}</div>
+        <a href="/order-detail.html?id=${o.id}" class="btn btn-secondary">View</a>
+      </div>
+    `).join('') : '<p class="text-muted">No orders yet.</p>';
+  } catch (err) { el.innerHTML = `<p class="text-danger">${err.message}</p>`; }
+}
+document.addEventListener('DOMContentLoaded', loadOrders);
+</script>
+</body>
+</html>

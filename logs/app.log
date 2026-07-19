@@ -1,0 +1,29 @@
+[2026-07-19T05:42:40.889Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-19T05:43:07.817Z] [WARN] GET /api/wishlist - Invalid or expired token
+[2026-07-19T05:43:43.408Z] [ERROR] Email send failed to vartak0069@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5a478bee46e88-3142a210571sm23684925eec.31 - gsmtp
+[2026-07-19T05:45:24.519Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:25.648Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:31.557Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:32.120Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:32.304Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:32.712Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:33.253Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:33.423Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:38.850Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:39.373Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:39.767Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:40.294Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:40.373Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:40.954Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:40.994Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:45:41.503Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:46:14.086Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:46:15.557Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:46:27.512Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:46:28.634Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T05:47:11.888Z] [ERROR] GET /api/products?category=electronics - invalid input syntax for type uuid: "electronics"
+[2026-07-19T05:47:16.289Z] [ERROR] GET /api/products?category=fashion - invalid input syntax for type uuid: "fashion"
+[2026-07-19T06:24:40.622Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T06:24:41.698Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-19T06:25:27.843Z] [INFO] 🚀 Server running on http://localhost:5000 [development]

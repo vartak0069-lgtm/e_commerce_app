@@ -1,0 +1,6 @@
+.cart-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--color-border); align-items: center; }
+.cart-item img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
+.cart-item-info { flex: 1; }
+.qty-control { display: flex; align-items: center; gap: 8px; }
+.qty-control button { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg); cursor: pointer; }
+.cart-summary { position: sticky; top: 90px; }

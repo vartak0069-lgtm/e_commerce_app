@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Addresses - MyStore</title>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/navbar.css">
+<link rel="stylesheet" href="/css/footer.css">
+<link rel="stylesheet" href="/css/checkout.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+<section class="container" style="padding:30px 0; max-width:600px;">
+  <h2 class="section-title">My Addresses</h2>
+  <div id="addressesList"><div class="spinner"></div></div>
+
+  <h3 class="mt-3 mb-2">Add New Address</h3>
+  <form id="addressForm" class="card" style="padding:20px;">
+    <div class="form-group"><label>Full Name</label><input type="text" id="full_name" required></div>
+    <div class="form-group"><label>Phone</label><input type="text" id="phone" required></div>
+    <div class="form-group"><label>Address Line 1</label><input type="text" id="address_line1" required></div>
+    <div class="form-group"><label>Address Line 2</label><input type="text" id="address_line2"></div>
+    <div class="form-group"><label>City</label><input type="text" id="city" required></div>
+    <div class="form-group"><label>State</label><input type="text" id="state" required></div>
+    <div class="form-group"><label>Pincode</label><input type="text" id="pincode" required></div>
+    <div class="form-group"><label><input type="checkbox" id="is_default" style="width:auto;"> Set as default</label></div>
+    <button class="btn btn-primary btn-block" type="submit">Save Address</button>
+  </form>
+</section>
+<div id="footer-placeholder"></div>
+<script src="/js/utils.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/notifications.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/validator.js"></script>
+<script src="/js/main.js"></script>
+<script>
+async function loadAddressesList() {
+  const el = document.getElementById('addressesList');
+  try {
+    const res = await api.get('/addresses');
+    el.innerHTML = res.data.length ? res.data.map(a => `
+      <div class="address-option ${a.is_default ? 'selected' : ''}">
+        <strong>${a.full_name}</strong> - ${a.phone} ${a.is_default ? '<span class="badge badge-success">Default</span>' : ''}<br>
+        ${a.address_line1}, ${a.city}, ${a.state} - ${a.pincode}
+        <div class="mt-1"><button class="btn btn-secondary delete-addr" data-id="${a.id}">Delete</button></div>
+      </div>
+    `).join('') : '<p class="text-muted">No addresses saved yet.</p>';
+
+    document.querySelectorAll('.delete-addr').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await api.delete(`/addresses/${btn.dataset.id}`);
+        showToast('Address deleted', 'success');
+        loadAddressesList();
+      });
+    });
+  } catch (err) { el.innerHTML = `<p class="text-danger">${err.message}</p>`; }
+}
+
+document.getElementById('addressForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const payload = {
+    full_name: document.getElementById('full_name').value,
+    phone: document.getElementById('phone').value,
+    address_line1: document.getElementById('address_line1').value,
+    address_line2: document.getElementById('address_line2').value,
+    city: document.getElementById('city').value,
+    state: document.getElementById('state').value,
+    pincode: document.getElementById('pincode').value,
+    is_default: document.getElementById('is_default').checked,
+  };
+  try {
+    await api.post('/addresses', payload);
+    showToast('Address saved!', 'success');
+    e.target.reset();
+    loadAddressesList();
+  } catch (err) { showToast(err.message, 'error'); }
+});
+
+document.addEventListener('DOMContentLoaded', loadAddressesList);
+</script>
+</body>
+</html>

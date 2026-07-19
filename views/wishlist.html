@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wishlist - MyStore</title>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/navbar.css">
+<link rel="stylesheet" href="/css/footer.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+<section class="container" style="padding:30px 0;">
+  <h2 class="section-title">My Wishlist</h2>
+  <div class="grid grid-products" id="wishlistGrid"><div class="spinner"></div></div>
+</section>
+<div id="footer-placeholder"></div>
+<script src="/js/utils.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/notifications.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/cart.js"></script>
+<script>
+async function loadWishlist() {
+  const el = document.getElementById('wishlistGrid');
+  try {
+    const res = await api.get('/wishlist');
+    el.innerHTML = res.data.length ? res.data.map(w => {
+      const p = w.products;
+      const price = p.discount_price || p.price;
+      const img = (p.images && p.images[0]) || '/images/products/placeholder.jpg';
+      return `
+        <div class="card product-card">
+          <a href="/product-detail.html?slug=${p.slug}"><img src="${img}" alt="${p.name}"></a>
+          <div class="product-card-body">
+            <div class="product-card-title">${p.name}</div>
+            <div class="price-current">${formatPrice(price)}</div>
+            <button class="btn btn-secondary mt-2 remove-wishlist" data-id="${p.id}">Remove</button>
+          </div>
+        </div>
+      `;
+    }).join('') : '<p class="text-muted">Your wishlist is empty.</p>';
+
+    document.querySelectorAll('.remove-wishlist').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await api.delete(`/wishlist/${btn.dataset.id}`);
+        showToast('Removed from wishlist', 'success');
+        loadWishlist();
+      });
+    });
+  } catch (err) { el.innerHTML = `<p class="text-danger">${err.message}</p>`; }
+}
+document.addEventListener('DOMContentLoaded', loadWishlist);
+</script>
+</body>
+</html>

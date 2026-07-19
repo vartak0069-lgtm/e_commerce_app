@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Users - Admin</title>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+<section class="container" style="padding:30px 0;">
+  <h2 class="section-title">Manage Users</h2>
+  <div id="usersList"><div class="spinner"></div></div>
+</section>
+<script src="/js/utils.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/notifications.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/main.js"></script>
+<script>
+async function loadUsers() {
+  const el = document.getElementById('usersList');
+  try {
+    const res = await api.get('/admin/users?limit=50');
+    el.innerHTML = res.data.map(u => `
+      <div class="card" style="padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+        <span>${u.name} (${u.email})</span>
+        <select data-id="${u.id}" class="role-select">
+          <option value="customer" ${u.role === 'customer' ? 'selected' : ''}>Customer</option>
+          <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+        </select>
+      </div>
+    `).join('');
+    document.querySelectorAll('.role-select').forEach(sel => {
+      sel.addEventListener('change', async () => {
+        await api.patch(`/admin/users/${sel.dataset.id}/role`, { role: sel.value });
+        showToast('Role updated', 'success');
+      });
+    });
+  } catch (err) { el.innerHTML = `<p class="text-danger">${err.message}</p>`; }
+}
+document.addEventListener('DOMContentLoaded', loadUsers);
+</script>
+</body>
+</html>

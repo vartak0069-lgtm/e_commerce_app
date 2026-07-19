@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Coupons - Admin</title>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+<section class="container" style="padding:30px 0;">
+  <h2 class="section-title">Manage Coupons</h2>
+
+  <form id="couponForm" class="card" style="padding:20px; margin-bottom:24px;">
+    <div class="form-group"><label>Code</label><input type="text" id="code" required></div>
+    <div class="form-group"><label>Type</label>
+      <select id="discount_type"><option value="percentage">Percentage</option><option value="flat">Flat</option></select>
+    </div>
+    <div class="form-group"><label>Discount Value</label><input type="number" id="discount_value" required></div>
+    <div class="form-group"><label>Min Order Value</label><input type="number" id="min_order_value" value="0"></div>
+    <button class="btn btn-primary" type="submit">Create Coupon</button>
+  </form>
+
+  <div id="couponsList"><div class="spinner"></div></div>
+</section>
+<script src="/js/utils.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/notifications.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/main.js"></script>
+<script>
+async function loadCoupons() {
+  const el = document.getElementById('couponsList');
+  try {
+    const res = await api.get('/admin/coupons');
+    el.innerHTML = res.data.map(c => `
+      <div class="card" style="padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+        <span>${c.code} - ${c.discount_type === 'percentage' ? c.discount_value + '%' : formatPrice(c.discount_value)}</span>
+        <button class="btn btn-danger delete-coupon" data-id="${c.id}">Delete</button>
+      </div>
+    `).join('');
+    document.querySelectorAll('.delete-coupon').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await api.delete(`/admin/coupons/${btn.dataset.id}`);
+        showToast('Coupon deleted', 'success');
+        loadCoupons();
+      });
+    });
+  } catch (err) { el.innerHTML = `<p class="text-danger">${err.message}</p>`; }
+}
+
+document.getElementById('couponForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await api.post('/admin/coupons', {
+      code: document.getElementById('code').value,
+      discount_type: document.getElementById('discount_type').value,
+      discount_value: Number(document.getElementById('discount_value').value),
+      min_order_value: Number(document.getElementById('min_order_value').value),
+      is_active: true,
+    });
+    showToast('Coupon created!', 'success');
+    e.target.reset();
+    loadCoupons();
+  } catch (err) { showToast(err.message, 'error'); }
+});
+
+document.addEventListener('DOMContentLoaded', loadCoupons);
+</script>
+</body>
+</html>

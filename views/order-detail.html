@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Details - MyStore</title>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/navbar.css">
+<link rel="stylesheet" href="/css/footer.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+<section class="container" style="padding:30px 0; max-width:700px;">
+  <div id="orderDetail"><div class="spinner"></div></div>
+</section>
+<div id="footer-placeholder"></div>
+<script src="/js/utils.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/notifications.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/main.js"></script>
+<script>
+async function loadOrderDetail() {
+  const el = document.getElementById('orderDetail');
+  const id = getQueryParam('id');
+  try {
+    const res = await api.get(`/orders/${id}`);
+    const o = res.data;
+    el.innerHTML = `
+      <div class="card" style="padding:20px;">
+        <h2>${o.order_number}</h2>
+        <p class="text-muted">${new Date(o.created_at).toLocaleString()}</p>
+        <p>Status: <span class="badge badge-success">${o.status}</span></p>
+        <hr class="mt-2 mb-2">
+        ${o.order_items.map(i => `
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span>${i.product_name} × ${i.quantity}</span>
+            <span>${formatPrice(i.total)}</span>
+          </div>
+        `).join('')}
+        <hr class="mt-2 mb-2">
+        <div style="display:flex; justify-content:space-between;"><span>Subtotal</span><span>${formatPrice(o.subtotal)}</span></div>
+        <div style="display:flex; justify-content:space-between;"><span>Discount</span><span>-${formatPrice(o.discount_amount)}</span></div>
+        <div style="display:flex; justify-content:space-between;"><span>Shipping</span><span>${formatPrice(o.shipping_charge)}</span></div>
+        <div style="display:flex; justify-content:space-between;"><span>Tax</span><span>${formatPrice(o.tax_amount)}</span></div>
+        <div style="display:flex; justify-content:space-between; font-weight:700;"><span>Total</span><span>${formatPrice(o.total_amount)}</span></div>
+        ${!['shipped','delivered','cancelled'].includes(o.status) ? `<button class="btn btn-danger mt-3" id="cancelBtn">Cancel Order</button>` : ''}
+      </div>
+    `;
+    document.getElementById('cancelBtn')?.addEventListener('click', async () => {
+      await api.patch(`/orders/${id}/cancel`);
+      showToast('Order cancelled', 'success');
+      loadOrderDetail();
+    });
+  } catch (err) { el.innerHTML = `<p class="text-danger">${err.message}</p>`; }
+}
+document.addEventListener('DOMContentLoaded', loadOrderDetail);
+</script>
+</body>
+</html>

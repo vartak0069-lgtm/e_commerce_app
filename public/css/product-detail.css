@@ -1,0 +1,5 @@
+.product-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.product-gallery img { width: 100%; border-radius: var(--radius); margin-bottom: 10px; }
+.product-detail-title { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+.product-detail-price { font-size: 24px; margin: 14px 0; }
+@media (max-width: 768px) { .product-detail-grid { grid-template-columns: 1fr; } }

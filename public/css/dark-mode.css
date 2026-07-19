@@ -1,0 +1,5 @@
+/* Extra dark-mode specific overrides beyond the CSS variables in styles.css */
+[data-theme="dark"] .product-card img { opacity: 0.92; }
+[data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea {
+  background: #1c1f24;
+}
