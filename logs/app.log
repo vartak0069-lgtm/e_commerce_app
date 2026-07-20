@@ -27,3 +27,27 @@
 [2026-07-19T06:24:40.622Z] [ERROR] POST /api/checkout/initiate - undefined
 [2026-07-19T06:24:41.698Z] [ERROR] POST /api/checkout/initiate - undefined
 [2026-07-19T06:25:27.843Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T05:23:15.279Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T05:25:01.170Z] [WARN] POST /api/auth/register - An account with this email already exists
+[2026-07-20T05:25:22.293Z] [ERROR] GET /api/products?category=electronics - invalid input syntax for type uuid: "electronics"
+[2026-07-20T05:25:25.768Z] [ERROR] GET /api/products?category=fashion - invalid input syntax for type uuid: "fashion"
+[2026-07-20T05:31:38.622Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T05:31:55.485Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T05:36:01.133Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T05:36:18.690Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T05:36:24.378Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T05:36:41.351Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T05:36:49.776Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T05:37:08.930Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T05:46:42.908Z] [WARN] POST /api/auth/login - Invalid email or password
+[2026-07-20T05:46:47.094Z] [WARN] POST /api/auth/login - Invalid email or password
+[2026-07-20T05:46:54.922Z] [WARN] POST /api/auth/login - Invalid email or password
+[2026-07-20T05:46:55.249Z] [WARN] POST /api/auth/login - Invalid email or password
+[2026-07-20T05:46:55.327Z] [WARN] POST /api/auth/login - Invalid email or password
+[2026-07-20T05:54:06.431Z] [INFO] 🚀 Server running on http://localhost:5000 [development]
+[2026-07-20T06:01:02.778Z] [WARN] POST /api/coupons/validate - Invalid or inactive coupon
+[2026-07-20T06:01:33.498Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-20T06:01:34.771Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-20T06:01:41.461Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-20T06:01:42.793Z] [ERROR] POST /api/checkout/initiate - undefined
+[2026-07-20T06:01:59.499Z] [INFO] 🚀 Server running on http://localhost:5000 [development]

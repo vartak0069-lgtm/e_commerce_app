@@ -7,8 +7,9 @@ async function loadNavbar() {
   const user = getCurrentUser();
   const authLinks = qs('#navAuthLinks');
   if (authLinks) {
+    const adminLink = user?.role === 'admin' ? `<a href="/admin/dashboard.html">Admin</a>` : '';
     authLinks.innerHTML = user
-      ? `<a href="/profile.html">Hi, ${user.name.split(' ')[0]}</a><a href="#" id="logoutBtn">Logout</a>`
+      ? `${adminLink}<a href="/profile.html">Hi, ${user.name.split(' ')[0]}</a><a href="#" id="logoutBtn">Logout</a>`
       : `<a href="/auth/login.html">Login</a><a href="/auth/register.html">Register</a>`;
 
     const logoutBtn = qs('#logoutBtn');
