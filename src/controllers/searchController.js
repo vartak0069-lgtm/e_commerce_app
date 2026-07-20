@@ -1,5 +1,6 @@
 const asyncHandler = require('../middleware/asyncHandler');
 const Product = require('../models/Product');
+const Category = require('../models/Category');
 const { paginate } = require('../utils/formatters');
 const { ValidationError } = require('../utils/errors');
 
@@ -9,11 +10,18 @@ const searchProducts = asyncHandler(async (req, res) => {
   if (!q || q.trim().length < 1) throw new ValidationError('Search query is required');
 
   const { from, to } = paginate(page, limit);
+
+  let categoryId;
+  if (category) {
+    const categoryRow = await Category.findBySlug(category);
+    categoryId = categoryRow ? categoryRow.id : '__no_match__';
+  }
+
   const { data, count } = await Product.findAll({
     from,
     to,
     search: q,
-    categoryId: category,
+    categoryId,
     minPrice,
     maxPrice,
     sortBy,

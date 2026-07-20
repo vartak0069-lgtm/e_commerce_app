@@ -14,6 +14,7 @@ router.use('/wishlist', require('./wishlist'));
 router.use('/addresses', require('./addresses'));
 router.use('/search', require('./search'));
 router.use('/coupons', require('./coupons'));
+router.use('/contact', require('./contact'));
 router.use('/admin', require('./admin'));
 
 // Health check

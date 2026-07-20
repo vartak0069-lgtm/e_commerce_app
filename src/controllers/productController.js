@@ -1,5 +1,6 @@
 const asyncHandler = require('../middleware/asyncHandler');
 const Product = require('../models/Product');
+const Category = require('../models/Category');
 const Inventory = require('../models/Inventory');
 const { NotFoundError } = require('../utils/errors');
 const { paginate, generateSlug } = require('../utils/formatters');
@@ -9,10 +10,18 @@ const getProducts = asyncHandler(async (req, res) => {
   const { page, limit, category, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
   const { from, to } = paginate(page, limit);
 
+  // "category" comes from the frontend as a slug (e.g. "electronics"), not a UUID,
+  // so resolve it to the actual category ID before filtering products.
+  let categoryId;
+  if (category) {
+    const categoryRow = await Category.findBySlug(category);
+    categoryId = categoryRow ? categoryRow.id : '__no_match__'; // no match -> empty result, not all products
+  }
+
   const { data, count } = await Product.findAll({
     from,
     to,
-    categoryId: category,
+    categoryId,
     search,
     minPrice,
     maxPrice,
