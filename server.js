@@ -6,6 +6,9 @@ validateEnv(); // fail fast if required env vars are missing
 const app = require('./src/app');
 const logger = require('./src/utils/logger');
 
+// Keep-Alive Route for Supabase Free Tier (prevents 7-day pause)
+app.use('/api', require('./src/routes/keepalive'));
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
