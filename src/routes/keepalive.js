@@ -1,44 +1,46 @@
-/**
- * Keep-Alive Route for Supabase Free Tier
- * Prevents database from pausing after 7 days of inactivity
- * Add this route to your Express server (src/routes/keepalive.js)
- */
-
 const express = require('express');
 const router = express.Router();
 
-// Import your database client/connection
-// Adjust based on your project structure
-const supabase = require('../config/supabaseClient'); // or your db config
-
 /**
  * GET /api/keepalive
- * Simple endpoint that queries the database to keep it active
- * Hit this endpoint once every 6-7 days via cron job
+ * Prevents Supabase free tier from pausing after 7 days of inactivity
  */
 router.get('/keepalive', async (req, res) => {
   try {
-    // Simple query to keep connection alive
-    // This just reads from any table - we use users as it's usually there
-    const { data, error } = await supabase
-      .from('users') // change table name if needed
-      .select('id')
-      .limit(1);
+    // Method 1: Using REST API directly (no client needed)
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
-    if (error) throw error;
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Missing Supabase credentials in environment variables');
+    }
+
+    // Make a simple HTTP request to Supabase REST API
+    const response = await fetch(`${supabaseUrl}/rest/v1/users?select=id&limit=1`, {
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Supabase API returned ${response.status}`);
+    }
+
+    const data = await response.json();
 
     console.log(`[${new Date().toISOString()}] Keep-alive ping successful`);
-    
+
     return res.status(200).json({
       status: 'success',
       message: 'Database is active and responding',
       timestamp: new Date().toISOString(),
-      data_checked: data ? 'users table' : 'no data'
+      table_queried: 'users table'
     });
 
   } catch (error) {
-    console.error('[Keep-Alive Error]', error);
-    
+    console.error('[Keep-Alive Error]', error.message);
+
     return res.status(500).json({
       status: 'error',
       message: 'Keep-alive ping failed',
