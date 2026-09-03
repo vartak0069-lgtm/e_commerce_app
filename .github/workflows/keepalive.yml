@@ -1,0 +1,32 @@
+name: Supabase Keep-Alive Ping
+
+on:
+  schedule:
+    - cron: '0 12 * * 0'
+  
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Ping Keep-Alive Endpoint
+        run: |
+          RESPONSE=$(curl -s -w "\n%{http_code}" https://ecommerceapp-brown-xi.vercel.app/api/keepalive)
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n 1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+          
+          echo "Response Code: $HTTP_CODE"
+          echo "Response Body: $BODY"
+          
+          if [ "$HTTP_CODE" -eq 200 ]; then
+            echo "✅ Keep-alive ping successful!"
+          else
+            echo "❌ Keep-alive ping failed with status $HTTP_CODE"
+            exit 1
+          fi
+
+      - name: Log Timestamp
+        run: |
+          echo "Keep-alive check completed at $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
